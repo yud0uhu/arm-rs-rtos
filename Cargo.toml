@@ -6,14 +6,24 @@ edition = "2018"
 version = "0.1.0"
 
 [workspace]
-members = ["testsuite"]
+# members = ["testsuite"]
 
 [dependencies]
 defmt = "0.3.0"
 defmt-rtt = "0.3.0"
 panic-probe = { version = "0.3.0", features = ["print-defmt"] }
+rtic-monotonic = "1.0.0"
+rtic-core = "1.0.0"
+heapless = "0.7.7"
+bare-metal = "1.0.0"
 cortex-m-rtic = "1.1"
 cortex-m = "0.7"
+panic-semihosting = "0.6.0"
+cortex-m-semihosting = "0.5.0"
+embedded-hal = "0.2"
+nb = "1"
+cortex-m-rt = "0.7"
+panic-halt = "0.2"
 # TODO enter your HAL here
 # some-hal = "1.2.3"
 # TODO add a monotonic if you use scheduling
@@ -38,6 +48,20 @@ opt-level = "s" # <-
 overflow-checks = true # <-
 
 # cargo build/run --release
+[build-dependencies]
+version_check = "0.9"
+
+[dev-dependencies]
+cortex-m-semihosting = "0.3.3"
+systick-monotonic = "1.0.0"
+
+[dev-dependencies.panic-semihosting]
+features = ["exit"]
+version = "0.5.2"
+
+[target.x86_64-unknown-linux-gnu.dev-dependencies]
+trybuild = "1"
+
 [profile.release]
 codegen-units = 1
 debug = 2
@@ -46,6 +70,24 @@ incremental = false
 lto = 'fat'
 opt-level = "s" # <-
 overflow-checks = false # <-
+
+[profile.dev.build-override]
+codegen-units = 16
+debug = false
+debug-assertions = false
+opt-level = 0
+overflow-checks = false
+
+[profile.release.build-override]
+codegen-units = 16
+debug = false
+debug-assertions = false
+opt-level = 0
+overflow-checks = false
+
+[dependencies.stm32f4xx-hal]
+version = "0.13.2"
+features = ["stm32f407"]
 
 # cargo test --release
 [profile.bench]
@@ -56,7 +98,6 @@ incremental = false
 lto = 'fat'
 opt-level = "s" # <-
 overflow-checks = false # <-
-
 # uncomment this to switch from the crates.io version of defmt to its git version
 # check app-template's README for instructions
 # [patch.crates-io]
