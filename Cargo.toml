@@ -6,24 +6,26 @@ edition = "2018"
 version = "0.1.0"
 
 [workspace]
-# members = ["testsuite"]
+members = [
+  "macros",
+#   "testsuite",
+]
+
+[lib]
+name = "rtic"
 
 [dependencies]
-defmt = "0.3.0"
-defmt-rtt = "0.3.0"
-panic-probe = { version = "0.3.0", features = ["print-defmt"] }
+cortex-m = "0.7.0"
+cortex-m-rtic-macros = { path = "macros", version = "1.1.5" }
 rtic-monotonic = "1.0.0"
 rtic-core = "1.0.0"
 heapless = "0.7.7"
 bare-metal = "1.0.0"
-cortex-m-rtic = "1.1"
-cortex-m = "0.7"
-panic-semihosting = "0.6.0"
-cortex-m-semihosting = "0.5.0"
-embedded-hal = "0.2"
+# embedded-hal = "0.2"
 nb = "1"
-cortex-m-rt = "0.7"
-panic-halt = "0.2"
+# Panic behaviour, see https://crates.io/keywords/panic-impl for alternatives
+# panic-halt = "0.2"
+
 # TODO enter your HAL here
 # some-hal = "1.2.3"
 # TODO add a monotonic if you use scheduling
@@ -52,6 +54,7 @@ overflow-checks = true # <-
 version_check = "0.9"
 
 [dev-dependencies]
+lm3s6965 = "0.1.3"
 cortex-m-semihosting = "0.3.3"
 systick-monotonic = "1.0.0"
 
@@ -85,9 +88,9 @@ debug-assertions = false
 opt-level = 0
 overflow-checks = false
 
-[dependencies.stm32f4xx-hal]
-version = "0.13.2"
-features = ["stm32f407"]
+# [dependencies.stm32f4xx-hal]
+# version = "0.14.0"
+# features = ["stm32f407"]
 
 # cargo test --release
 [profile.bench]
@@ -98,10 +101,6 @@ incremental = false
 lto = 'fat'
 opt-level = "s" # <-
 overflow-checks = false # <-
-# uncomment this to switch from the crates.io version of defmt to its git version
-# check app-template's README for instructions
-# [patch.crates-io]
-# defmt = { git = "https://github.com/knurling-rs/defmt", rev = "use defmt version reported by `probe-run --version`" }
-# defmt-rtt = { git = "https://github.com/knurling-rs/defmt", rev = "use defmt version reported by `probe-run --version`" }
-# defmt-test = { git = "https://github.com/knurling-rs/defmt", rev = "use defmt version reported by `probe-run --version`" }
-# panic-probe = { git = "https://github.com/knurling-rs/defmt", rev = "use defmt version reported by `probe-run --version`" }
+
+[patch.crates-io]
+lm3s6965 = { git = "https://github.com/japaric/lm3s6965" }
