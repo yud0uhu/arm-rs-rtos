@@ -1,6 +1,6 @@
 [package]
 # TODO fix `authors` and `name` if you didn't use `cargo-generate`
-authors = ["yud0uhu <cist.b219.y.osaka@gmail.com>"]
+authors = ["yud0uhu"]
 name = "arm-rs-rtos"
 edition = "2018"
 version = "0.1.0"
@@ -16,21 +16,21 @@ name = "rtic"
 
 [dependencies]
 cortex-m = "0.7.0"
+cortex-m-rt = "0.7"
 cortex-m-rtic-macros = { path = "macros", version = "1.1.5" }
 rtic-monotonic = "1.0.0"
 rtic-core = "1.0.0"
 heapless = "0.7.7"
 bare-metal = "1.0.0"
-# embedded-hal = "0.2"
+embedded-hal = "0.2"
 nb = "1"
 # Panic behaviour, see https://crates.io/keywords/panic-impl for alternatives
-# panic-halt = "0.2"
+panic-halt = "0.2"
 
 # TODO enter your HAL here
 # some-hal = "1.2.3"
 # TODO add a monotonic if you use scheduling
 # some-monotonic = "1.2.3"
-
 # cargo build/run
 [profile.dev]
 codegen-units = 1
@@ -54,7 +54,7 @@ overflow-checks = true # <-
 version_check = "0.9"
 
 [dev-dependencies]
-lm3s6965 = "0.1.3"
+# lm3s6965 = "0.1.3"
 cortex-m-semihosting = "0.3.3"
 systick-monotonic = "1.0.0"
 
@@ -88,9 +88,9 @@ debug-assertions = false
 opt-level = 0
 overflow-checks = false
 
-# [dependencies.stm32f4xx-hal]
-# version = "0.14.0"
-# features = ["stm32f407"]
+[dependencies.stm32f4xx-hal]
+version = "0.14.0"
+features = ["stm32f407"]
 
 # cargo test --release
 [profile.bench]
@@ -102,5 +102,5 @@ lto = 'fat'
 opt-level = "s" # <-
 overflow-checks = false # <-
 
-[patch.crates-io]
-lm3s6965 = { git = "https://github.com/japaric/lm3s6965" }
+# [patch.crates-io]
+# lm3s6965 = { git = "https://github.com/japaric/lm3s6965" }
