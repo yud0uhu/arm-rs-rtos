@@ -1,5 +1,6 @@
 [target.thumbv7m-none-eabi]
-runner = "qemu-system-arm -cpu cortex-m3 -machine lm3s6965evb -nographic -semihosting-config enable=on,target=native -kernel"
+# runner = "qemu-system-arm -cpu cortex-m3 -machine lm3s6965evb -nographic -semihosting-config enable=on,target=native -kernel"
+runnner = 'probe-run --chip stm32f407'
 
 [target.'cfg(all(target_arch = "arm", target_os = "none"))']
 # runner = "probe-run --chip STM32F407VETx"

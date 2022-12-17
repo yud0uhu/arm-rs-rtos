@@ -1,62 +1,43 @@
+//! Demonstrate the use of a blocking `Delay` using the SYST (sysclock) timer.
+
+#![deny(unsafe_code)]
+#![allow(clippy::empty_loop)]
 #![no_main]
 #![no_std]
 
-use arm_rs_rtos as _; // global logger + panicking-behavior + memory layout
+// Halt on panic
+use panic_halt as _; // panic handler
 
-#[rtic::app(
-    device = some_hal::pac, // TODO: Replace `some_hal::pac` with the path to the PAC
-    dispatchers = [FreeInterrupt1, ...] // TODO: Replace the `FreeInterrupt1, ...` with free interrupt vectors if software tasks are used
-)]
-mod app {
-    // TODO: Add a monotonic if scheduling will be used
-    // #[monotonic(binds = SysTick, default = true)]
-    // type DwtMono = DwtSystick<80_000_000>;
+use cortex_m_rt::entry;
+use stm32f4xx_hal as hal;
 
-    // Shared resources go here
-    #[shared]
-    struct Shared {
-        // TODO: Add resources
-    }
+use crate::hal::{pac, prelude::*};
 
-    // Local resources go here
-    #[local]
-    struct Local {
-        // TODO: Add resources
-    }
+#[entry]
+fn main() -> ! {
+    if let (Some(dp), Some(cp)) = (
+        pac::Peripherals::take(),
+        cortex_m::peripheral::Peripherals::take(),
+    ) {
+        // Set up the LED. On the Nucleo-446RE it's connected to pin PA5.
+        let gpioa = dp.GPIOA.split();
+        let mut led = gpioa.pa5.into_push_pull_output();
 
-    #[init]
-    fn init(cx: init::Context) -> (Shared, Local, init::Monotonics) {
-        defmt::info!("init");
+        // Set up the system clock. We want to run at 48MHz for this one.
+        let rcc = dp.RCC.constrain();
+        let clocks = rcc.cfgr.sysclk(48.MHz()).freeze();
 
-        task1::spawn().ok();
-
-        // Setup the monotonic timer
-        (
-            Shared {
-                // Initialization of shared resources go here
-            },
-            Local {
-                // Initialization of local resources go here
-            },
-            init::Monotonics(
-                // Initialization of optional monotonic timers go here
-            ),
-        )
-    }
-
-    // Optional idle, can be removed if not needed.
-    #[idle]
-    fn idle(_: idle::Context) -> ! {
-        defmt::info!("idle");
+        // Create a delay abstraction based on SysTick
+        let mut delay = cp.SYST.delay(&clocks);
 
         loop {
-            continue;
+            // On for 1s, off for 1s.
+            led.set_high();
+            delay.delay_ms(1000_u32);
+            led.set_low();
+            delay.delay_ms(1000_u32);
         }
     }
 
-    // TODO: Add tasks
-    #[task]
-    fn task1(_cx: task1::Context) {
-        defmt::info!("Hello from task1!");
-    }
+    loop {}
 }
