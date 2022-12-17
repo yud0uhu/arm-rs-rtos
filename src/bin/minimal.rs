@@ -1,4 +1,4 @@
-//! Demonstrate the use of a blocking `Delay` using TIM5 general-purpose timer.
+//! Demonstrate the use of a blocking `Delay` using the SYST (sysclock) timer.
 
 #![deny(unsafe_code)]
 #![allow(clippy::empty_loop)]
@@ -15,29 +15,27 @@ use crate::hal::{pac, prelude::*};
 
 #[entry]
 fn main() -> ! {
-    if let (Some(dp), Some(_cp)) = (
+    if let (Some(dp), Some(cp)) = (
         pac::Peripherals::take(),
         cortex_m::peripheral::Peripherals::take(),
     ) {
-        // Set up the LED. On the Mini-F4 it's connected to pin PC13.
-        let gpioc = dp.GPIOC.split();
-        let mut led = gpioc.pc13.into_push_pull_output();
+        // Set up the LED. On the Nucleo-446RE it's connected to pin PA5.
+        let gpioa = dp.GPIOA.split();
+        let mut led = gpioa.pa5.into_push_pull_output();
 
         // Set up the system clock. We want to run at 48MHz for this one.
         let rcc = dp.RCC.constrain();
-        let clocks = rcc.cfgr.use_hse(25.MHz()).sysclk(48.MHz()).freeze();
+        let clocks = rcc.cfgr.sysclk(48.MHz()).freeze();
 
-        // Create a delay abstraction based on general-pupose 32-bit timer TIM5
-        let mut delay = dp.TIM5.delay_us(&clocks);
+        // Create a delay abstraction based on SysTick
+        let mut delay = cp.SYST.delay(&clocks);
 
         loop {
-            // On for 1s, off for 3s.
+            // On for 1s, off for 1s.
             led.set_high();
-            // Use `embedded_hal::DelayMs` trait
             delay.delay_ms(1000_u32);
             led.set_low();
-            // or use `fugit::ExtU32` trait
-            delay.delay(3.secs());
+            delay.delay_ms(1000_u32);
         }
     }
 

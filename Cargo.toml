@@ -90,7 +90,7 @@ overflow-checks = false
 
 [dependencies.stm32f4xx-hal]
 version = "0.14.0"
-features = ["stm32f407"]
+features = ["rt", "stm32f407"]
 
 # cargo test --release
 [profile.bench]
