@@ -29,7 +29,7 @@
       "cwd": "${workspaceRoot}",
       "preLaunchTask": "Cargo Build (debug)",
       "runToEntryPoint": "main",
-      "executable": "./target/thumbv7em-none-eabihf/debug/minimal",
+      "executable": "./target/thumbv7em-none-eabihf/debug/examples/*",
       /* Run `cargo build --example itm` and uncomment this line to run itm example */
       // "executable": "./target/thumbv7em-none-eabihf/debug/examples/itm",
       "device": "STM32F407VGT",
