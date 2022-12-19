@@ -5,6 +5,7 @@ use panic_halt as _;
 
 #[rtic::app(device = stm32f4xx_hal::pac, dispatchers = [USART1])]
 mod app {
+    use cortex_m_semihosting::hprintln;
     use stm32f4xx_hal::{
         gpio::{Output, PC13},
         pac,
@@ -33,6 +34,7 @@ mod app {
 
         let mono = ctx.device.TIM2.monotonic_us(&clocks);
         tick::spawn().ok();
+        foo::spawn().unwrap();
         (Shared {}, Local { led }, init::Monotonics(mono))
     }
 
@@ -45,5 +47,10 @@ mod app {
     fn tick(ctx: tick::Context) {
         tick::spawn_after(1.secs()).ok();
         ctx.local.led.toggle();
+    }
+
+    #[task(priority = 1)]
+    fn foo(ctx: foo::Context) {
+        hprintln!("baz").unwrap();
     }
 }
