@@ -1,14 +1,8 @@
-[target.thumbv7m-none-eabi]
+[target.'cfg(all(target_arch = "arm", target_os = "none"))']
 runner = "qemu-system-arm -cpu cortex-m3 -machine lm3s6965evb -nographic -semihosting-config enable=on,target=native -kernel"
 rustflags = [
   "-C", "link-arg=-Tlink.x",
 ]
-
-# [target.'cfg(all(target_arch = "arm", target_os = "none"))']
-# runner = "probe-run --chip STM32F407VETx"
-# rustflags = [
-#   "-C", "link-arg=-Tlink.x",
-# ]
 
 [build]
 # (`thumbv6m-*` is compatible with all ARM Cortex-M chips but using the right
