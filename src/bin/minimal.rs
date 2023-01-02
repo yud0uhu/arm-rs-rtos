@@ -1,17 +1,10 @@
 #![no_main]
 #![no_std]
 
-use arm_rs_rtos as _; // global logger + panicking-behavior + memory layout
+use panic_semihosting as _;
 
-#[rtic::app(
-    device = some_hal::pac, // TODO: Replace `some_hal::pac` with the path to the PAC
-    dispatchers = [FreeInterrupt1, ...] // TODO: Replace the `FreeInterrupt1, ...` with free interrupt vectors if software tasks are used
-)]
+#[rtic::app(device = lm3s6965, dispatchers = [SSI0, QEI0])]
 mod app {
-    // TODO: Add a monotonic if scheduling will be used
-    // #[monotonic(binds = SysTick, default = true)]
-    // type DwtMono = DwtSystick<80_000_000>;
-
     // Shared resources go here
     #[shared]
     struct Shared {
