@@ -2,10 +2,8 @@
 
 ## Run
 
-example
-
 ```sh
-$ cargo run --example task --target thumbv7m-none-eabi
+$ cargo run --bin task
 ```
 
 ## Using the Library
